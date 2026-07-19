@@ -1,0 +1,30 @@
+<!-- @dsCard group="Components" viewport="700x360" name="Core" subtitle="Button, GlowSurface, StreakDots, SoftTimer, WordChip" -->
+<link rel="stylesheet" href="../../styles.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script src="../../_ds_bundle.js"></script>
+<body style="margin:0;padding:20px 24px;background:var(--surface-page)"><div id="root"></div>
+<script type="text/babel">
+const { Button, GlowSurface, StreakDots, SoftTimer, WordChip } = window.CandoriDesignSystem_46536d;
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <div style={{display:'flex',flexDirection:'column',gap:20}}>
+    <div style={{display:'flex',gap:12,alignItems:'center'}}>
+      <Button variant="primary" size="lg">Begin today&rsquo;s session</Button>
+      <Button variant="quiet">Continue</Button>
+      <Button variant="ghost">Skip for now</Button>
+      <Button variant="primary" disabled>Begin</Button>
+    </div>
+    <div style={{display:'flex',gap:16}}>
+      {[0,0.5,1].map(h => <GlowSurface key={h} heat={h} style={{flex:1,padding:'14px 18px'}}>
+        <span style={{font:'var(--type-meta)',letterSpacing:'var(--tracking-meta)',textTransform:'uppercase',color:'var(--text-meta)'}}>heat {h}</span>
+      </GlowSurface>)}
+    </div>
+    <div style={{display:'flex',gap:40,alignItems:'center'}}>
+      <StreakDots day={12} week={[true,true,false,true,true,true,true]} />
+      <SoftTimer progress={0.55} style={{width:220}} />
+      <div><WordChip word="moonlight" by="user" /> <WordChip word="argued" by="ai" /> <WordChip word="softly" by="ai" pending /></div>
+    </div>
+  </div>
+);
+</script>

@@ -1,0 +1,39 @@
+:root{
+/* Base — calm / resting state */
+--parchment: #F7F2E8;
+--parchment-deep: #F0E9DB;
+--parchment-card: #FCF9F2;
+--ink: #33291E;
+--ink-soft: #6E6355;
+--ink-faint: #9C9184;
+--hairline: rgba(88,72,50,0.14);
+/* Sage accents */
+--sage: #8B9B80;
+--sage-deep: #6C7D61;
+--sage-tint: #E7ECE1;
+--sage-faint: #F1F4EC;
+/* Glow ramp — driven by typing warmth (sand → amber → coral) */
+--glow-sand: #E7CD9B;
+--glow-amber: #ECA84F;
+--glow-coral: #E86A3C;
+--glow-sand-soft: #F4E8CE;
+--glow-amber-soft: #F8DFB4;
+--glow-coral-soft: #F8C9A8;
+/* Semantic aliases */
+--surface-page: var(--parchment);
+--surface-card: var(--parchment-card);
+--surface-raised: #FFFDF8;
+--text-body: var(--ink);
+--text-secondary: var(--ink-soft);
+--text-meta: var(--ink-faint);
+--text-on-warm: #4A2E14;
+--accent: var(--sage-deep);
+--accent-quiet: var(--sage);
+--focus-ring: rgba(108,125,97,0.45);
+--link: var(--sage-deep);
+--link-hover: #55644C;
+/* Glow runtime (heat: 0 calm → 1 full flow; set by JS from typing WPM) */
+--glow-heat: 0; /* @kind other */
+--glow-color: var(--glow-sand);
+--glow-soft: var(--glow-sand-soft);
+}
