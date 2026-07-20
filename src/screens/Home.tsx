@@ -1,9 +1,10 @@
 import { Button } from "../components/Button";
 import { StreakDots } from "../components/StreakDots";
 import { useStreak, useStreakStore } from "../state/streakStore";
+import { SignInPrompt } from "./SignInPrompt";
 
 export function Home({ onBegin }: { onBegin: () => void }) {
-  const { day, week, completedToday } = useStreak();
+  const { day, week, completedToday, completionCount } = useStreak();
   const lastStory = useStreakStore((s) => s.lastStory);
 
   const subtitle = completedToday
@@ -28,7 +29,8 @@ export function Home({ onBegin }: { onBegin: () => void }) {
         </div>
         <div style={{ font: "var(--type-body)", color: "var(--text-secondary)", maxWidth: "26rem" }}>{subtitle}</div>
       </div>
-      <div style={{ padding: "0 0 40px" }}>
+      <div style={{ padding: "0 0 40px", display: "flex", flexDirection: "column", gap: 20 }}>
+        {completionCount > 0 && <SignInPrompt />}
         <Button variant="primary" size="lg" onClick={onBegin} style={{ width: "100%", justifyContent: "center" }}>
           {completedToday ? "Go again" : "Begin today’s session"}
         </Button>

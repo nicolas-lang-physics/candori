@@ -1,6 +1,8 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { currentDay, isCompletedOn, todayISO, weekDots } from "../lib/streak";
+import { pushCompletions } from "../lib/completions";
+import { getUserId } from "../lib/supabase";
 
 interface StreakState {
   /** ISO local dates of completed sessions */
@@ -23,6 +25,11 @@ export const useStreakStore = create<StreakState>()(
         if (!isCompletedOn(get().completions, today)) {
           set({ completions: [...get().completions, today] });
         }
+        // If already signed in, sync immediately; otherwise this date is
+        // picked up by mergeLocalStreakToCloud() the next time they sign in.
+        void getUserId().then((userId) => {
+          if (userId) void pushCompletions(userId, [today]);
+        });
       },
       setLastStory: (story) => set({ lastStory: story }),
       setCompletions: (dates) => set({ completions: [...new Set(dates)].sort() }),
