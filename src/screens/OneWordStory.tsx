@@ -7,8 +7,12 @@ import { ai } from "../lib/ai";
 import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { useStreakStore } from "../state/streakStore";
 
-const MAX_WORDS = 24;
+const MAX_WORDS = 200;
 const OPENERS = ["The", "Once", "Nobody", "Yesterday", "Somewhere", "She", "He", "Every"];
+// Ends the story. Alone: accept it as already finished, ending on the last
+// (AI) word. Appended to a word: submit that word and end immediately, no
+// AI turn follows. Reserved — see api/_lib/validate.ts's STORY_STOP_CHAR.
+const STOP_CHAR = "~";
 
 export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const [words, setWords] = useState<StoryWord[]>(() => [
@@ -20,6 +24,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const [done, setDone] = useState(false);
   const setLastStory = useStreakStore((s) => s.setLastStory);
   const doneRef = useRef(false);
+  const storyBoxRef = useRef<HTMLDivElement>(null);
 
   const type = (v: string) => {
     setInput(v.replace(/\s.*$/, ""));
@@ -33,15 +38,30 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   };
 
   const submit = () => {
-    const w = input.trim();
-    if (!w || done || waiting) return;
+    const raw = input.trim();
+    if (!raw || done || waiting) return;
+
+    // "~" alone: the story is already complete, ending on the last (AI) word.
+    if (raw === STOP_CHAR) {
+      setInput("");
+      finish(words);
+      return;
+    }
+
+    // "word~": submit that word and end right there — no AI turn follows.
+    const endsHere = raw.endsWith(STOP_CHAR);
+    const w = endsHere ? raw.slice(0, -STOP_CHAR.length).trim() : raw;
+    if (!w) return;
+
     const withUser = [...words, { text: w, by: "user" as const }];
     setInput("");
-    if (withUser.length >= MAX_WORDS || w === ".") {
+
+    if (endsHere || withUser.length >= MAX_WORDS) {
       setWords(withUser);
       finish(withUser);
       return;
     }
+
     setWords([...withUser, { text: "…", by: "ai", pending: true }]);
     setWaiting(true);
     // Captured now, before it decays while we wait — reflects how fast the
@@ -60,6 +80,14 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     const t = setInterval(() => setHeat((h) => Math.max(0, h - 0.04)), 1000);
     return () => clearInterval(t);
   }, []);
+
+  // Keep the newest word in view as the story grows past the visible area.
+  // No-op while everything still fits (scrollHeight <= clientHeight), so
+  // short stories keep their original centered look.
+  useEffect(() => {
+    const el = storyBoxRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [words]);
 
   const storyText = words.filter((w) => !w.pending).map((w) => w.text).join(" ");
 
@@ -90,7 +118,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
         >
           Your story · today
         </div>
-        <div style={{ flex: 1, display: "grid", placeItems: "center", padding: "24px 0" }}>
+        <div style={{ flex: 1, display: "grid", placeItems: "center", padding: "24px 0", minHeight: 0 }}>
           <div
             style={{
               background: "var(--surface-raised)",
@@ -99,10 +127,16 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
               boxShadow: "var(--shadow-raised)",
               padding: "36px 30px",
               width: "100%",
+              maxHeight: "100%",
               boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
             }}
           >
-            <div style={{ font: "var(--type-story)", lineHeight: 1.65, color: "var(--ink)" }}>{storyText}</div>
+            <div style={{ font: "var(--type-story)", lineHeight: 1.65, color: "var(--ink)", overflowY: "auto" }}>
+              {storyText}
+            </div>
             <div
               style={{
                 marginTop: 24,
@@ -111,6 +145,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "baseline",
+                flexShrink: 0,
               }}
             >
               <span style={{ font: "500 15px/1 var(--font-sans)", color: "var(--ink)" }}>candori</span>
@@ -156,12 +191,26 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
           {words.filter((w) => !w.pending).length} / {MAX_WORDS}
         </span>
       </div>
-      <div style={{ flex: 1, padding: "32px 0", display: "grid", alignContent: "center" }}>
+      <div
+        ref={storyBoxRef}
+        style={{
+          flex: 1,
+          minHeight: 0,
+          padding: "32px 0",
+          overflowY: "auto",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+        }}
+      >
         <StoryText words={words} cursor />
       </div>
-      <GlowSurface heat={heat} style={{ padding: "18px 20px", marginBottom: 40 }}>
+      <GlowSurface heat={heat} style={{ padding: "18px 20px" }}>
         <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
       </GlowSurface>
+      <div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
+        ~ alone ends here · word~ ends on that word
+      </div>
     </div>
   );
 }

@@ -16,7 +16,7 @@ import {
   associationUserMessage,
   storyUserMessage,
 } from "../api/_lib/prompts";
-import { extractWord } from "../api/_lib/validate";
+import { extractStoryWord, extractWord } from "../api/_lib/validate";
 
 interface Args {
   game: "story" | "assoc";
@@ -44,7 +44,13 @@ function parseArgs(): Args {
 const STORY_OPENERS = ["The", "Once", "Nobody", "Yesterday", "Somewhere"];
 const ASSOC_STARTERS = ["river", "clock", "salt", "window", "thread"];
 
-async function nextWord(client: Anthropic, model: string, system: string, userMessage: string) {
+async function nextWord(
+  client: Anthropic,
+  model: string,
+  system: string,
+  userMessage: string,
+  extractor: (raw: string) => string | null = extractWord,
+) {
   const response = await client.messages.create({
     model,
     max_tokens: 16,
@@ -52,7 +58,7 @@ async function nextWord(client: Anthropic, model: string, system: string, userMe
     messages: [{ role: "user", content: userMessage }],
   });
   const text = response.content.find((b) => b.type === "text");
-  return text && text.type === "text" ? extractWord(text.text) : null;
+  return text && text.type === "text" ? extractor(text.text) : null;
 }
 
 async function runStory(client: Anthropic, model: string, turns: number) {
@@ -69,7 +75,7 @@ async function runStory(client: Anthropic, model: string, turns: number) {
         `Continue this story with one word: ${words.map((w) => w.text).join(" ")}`)) ?? "the";
     words.push({ text: userWord, by: "user" });
     process.stdout.write(` ${userWord}`);
-    const aiWord = await nextWord(client, model, STORY_SYSTEM, storyUserMessage(words));
+    const aiWord = await nextWord(client, model, STORY_SYSTEM, storyUserMessage(words), extractStoryWord);
     if (!aiWord) {
       console.log("\n  [no valid word returned]");
       break;

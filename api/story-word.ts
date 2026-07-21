@@ -1,6 +1,6 @@
 import { getClient, storyModel } from "./_lib/anthropic";
 import { STORY_SYSTEM, storyUserMessage } from "./_lib/prompts";
-import { extractWord } from "./_lib/validate";
+import { extractStoryWord } from "./_lib/validate";
 
 // Plain Vite app on Vercel (not Next.js) — Edge Function convention: default
 // export handler, Web API Request/Response, opted in via `config.runtime`.
@@ -32,9 +32,9 @@ async function oneWord(words: StoryWordInput[]): Promise<string | null> {
     messages: [{ role: "user", content: storyUserMessage(words) }],
   });
   const text = response.content.find((b) => b.type === "text");
-  const word = text && text.type === "text" ? extractWord(text.text) : null;
-  // The AI never ends the story — a bare period or empty result is invalid.
-  return word && word !== "." ? word : null;
+  // extractStoryWord already rejects a bare "." (empty core) and strips any
+  // stray "~" the model might emit — the AI can never end the story itself.
+  return text && text.type === "text" ? extractStoryWord(text.text) : null;
 }
 
 export default async function handler(request: Request): Promise<Response> {

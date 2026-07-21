@@ -4,8 +4,8 @@
  * Faster typing → shorter pause; slower/calmer typing → longer pause.
  * Tune MIN_DELAY_MS / MAX_DELAY_MS to taste.
  */
-const MIN_DELAY_MS = 1000; // heat = 1 (max)
-const MAX_DELAY_MS = 3000; // heat = 0 (min)
+export const MIN_DELAY_MS = 500; // heat = 1 (max)
+export const MAX_DELAY_MS = 2000; // heat = 0 (min)
 
 export function aiReplyDelayMs(heat: number): number {
   const h = Math.max(0, Math.min(1, heat));
