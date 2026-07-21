@@ -3,6 +3,7 @@ import { Button } from "../components/Button";
 import { SoftTimer } from "../components/SoftTimer";
 import { TextInput } from "../components/TextInput";
 import { ai } from "../lib/ai";
+import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { Blob, glowKeyframes, usePrefersReducedMotion, warmColor } from "./glow/Blobs";
 
 const STARTERS = ["river", "clock", "salt", "window", "thread", "ember", "map", "hollow"];
@@ -62,11 +63,14 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
   const submit = () => {
     const w = input.trim();
     if (!w || waiting) return;
+    // Captured now, before it keeps decaying while we wait for the reply —
+    // the delay reflects how fast the player was typing at this moment.
+    const delay = aiReplyDelayMs(heat);
     setCurrent((c) => ({ text: w, by: "user", key: c.key + 1 }));
     armFade();
     setInput("");
     setWaiting(true);
-    void ai.nextAssociation(w).then((word) => {
+    void withMinDelay(ai.nextAssociation(w), delay).then((word) => {
       setCurrent((c) => ({ text: word, by: "ai", key: c.key + 1 }));
       armFade();
       setWaiting(false);
@@ -83,7 +87,7 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
   const animate = !reducedMotion;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 24px", position: "relative", overflow: "hidden" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 24px", position: "relative" }}>
       <style>{glowKeyframes}</style>
       <div style={{ position: "absolute", inset: 0, pointerEvents: "none", filter: "blur(18px)" }}>
         <Blob x="50%" y="44%" size={wordSize} color={warm(0.3 + 0.1 * heat)} opacity={wordGlowOpacity} drift="blobDriftA" dur="7s" animate={animate} />
@@ -102,10 +106,12 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
         <span
           key={current.key}
           style={{
+            display: "inline-block",
             font: "400 2.25rem/1.3 var(--font-sans)",
             color: current.by === "ai" ? "var(--word-ai)" : "var(--sage-deep)",
             opacity: faded ? 0.18 : 1,
-            transition: "opacity 6s var(--ease-calm)",
+            transform: faded ? "scale(0.8)" : "scale(1)",
+            transition: "opacity 6s var(--ease-calm), transform 6s var(--ease-calm)",
           }}
         >
           {current.text}

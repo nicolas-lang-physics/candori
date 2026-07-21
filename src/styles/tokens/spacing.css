@@ -7,6 +7,7 @@
 --radius-s: 10px;
 --radius-m: 16px;
 --radius-l: 24px;
+--radius-frame: 28px;      /* the app's outer bounding card, see UI/ui_kits/app-v2/index.html */
 --radius-pill: 999px;
 /* Borders & shadows — soft, warm, low */
 --border-card: 1px solid var(--hairline);

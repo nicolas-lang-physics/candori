@@ -4,6 +4,7 @@ import { GlowSurface } from "../components/GlowSurface";
 import { StoryText, type StoryWord } from "../components/StoryText";
 import { TextInput } from "../components/TextInput";
 import { ai } from "../lib/ai";
+import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { useStreakStore } from "../state/streakStore";
 
 const MAX_WORDS = 24;
@@ -43,7 +44,10 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     }
     setWords([...withUser, { text: "…", by: "ai", pending: true }]);
     setWaiting(true);
-    void ai.nextStoryWord(withUser).then((aiWord) => {
+    // Captured now, before it decays while we wait — reflects how fast the
+    // player was typing at the moment they submitted this word.
+    const delay = aiReplyDelayMs(heat);
+    void withMinDelay(ai.nextStoryWord(withUser), delay).then((aiWord) => {
       if (doneRef.current) return;
       const next = [...withUser, { text: aiWord, by: "ai" as const }];
       setWords(next);
