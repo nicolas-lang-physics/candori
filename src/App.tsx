@@ -1,10 +1,14 @@
 import { Gallery } from "./screens/Gallery";
 import { Home } from "./screens/Home";
-import { Lesson } from "./screens/Lesson";
+//import { Lesson } from "./screens/Lesson";
 import { OneWordStory } from "./screens/OneWordStory";
 import { Reflection } from "./screens/Reflection";
 import { WordAssociation } from "./screens/WordAssociation";
 import { useSessionStore } from "./state/sessionStore";
+
+import oneWordInstructions from "./content/one-word-story.json";
+import {OWSInstruction} from "./screens/OWSInstruction.tsx";
+import {Lesson} from "./screens/Lesson.tsx";
 
 export default function App() {
   const screen = useSessionStore((s) => s.screen);
@@ -34,14 +38,14 @@ export default function App() {
           glow and the story input's GlowSurface halo are allowed to bleed
           past the rounded edge instead of being clipped by it. If that ships,
           swap back to overflow:'hidden' + overflowY:'auto' on the inner div. */}
-      <div
+        <div
         style={{
           width: "clamp(320px, 92vw, 640px)",
           height: "clamp(680px, 92vh, 900px)",
           background: "var(--surface-page)",
-          border: "1px solid var(--hairline)",
-          borderRadius: "var(--radius-frame)",
-          boxShadow: "var(--shadow-raised)",
+          //border: "1px solid var(--hairline)",
+          //borderRadius: "var(--radius-frame)",
+          //boxShadow: "var(--shadow-raised)",
           display: "flex",
           flexDirection: "column",
         }}
@@ -49,6 +53,7 @@ export default function App() {
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {screen === "home" && <Home onBegin={advance} />}
           {screen === "lesson" && <Lesson onContinue={advance} />}
+          {screen === "instruction" && <OWSInstruction instructions={oneWordInstructions} onContinue={advance} />}
           {screen === "assoc" && <WordAssociation onContinue={advance} />}
           {screen === "story" && <OneWordStory onContinue={advance} />}
           {screen === "reflect" && <Reflection onDone={advance} />}

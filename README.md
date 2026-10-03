@@ -1,12 +1,6 @@
 # candori
 
-Five minutes. No script.
 
-A guided daily practice: one philosophy provocation, one AI-powered word-association
-warm-up, one AI-powered one-word story, one private reflection. See
-`UI/readme.md` for the design system this app implements, and the
-basic-memory vault (`01 - Projects/Mindful Improvisation – Candori/`) for
-product background.
 
 ## Local development
 

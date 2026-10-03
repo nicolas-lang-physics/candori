@@ -19,20 +19,20 @@ export function Home({ onBegin }: { onBegin: () => void }) {
         <span style={{ font: "500 20px/1 var(--font-sans)", letterSpacing: "-0.01em", color: "var(--ink)" }}>
           candori
         </span>
-        <StreakDots day={day} week={week} />
+          {/*<StreakDots day={day} week={week} />*/}
       </div>
       <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", gap: 32, padding: "48px 0" }}>
         <div style={{ font: "var(--type-display)", letterSpacing: "var(--tracking-display)", color: "var(--ink)" }}>
-          Five minutes.
+          Don't overthink.
           <br />
-          No script.
+          Type.
         </div>
         <div style={{ font: "var(--type-body)", color: "var(--text-secondary)", maxWidth: "26rem" }}>{subtitle}</div>
       </div>
       <div style={{ padding: "0 0 40px", display: "flex", flexDirection: "column", gap: 20 }}>
-        {completionCount > 0 && <SignInPrompt />}
+        {/*completionCount > 0 && <SignInPrompt />*/}
         <Button variant="primary" size="lg" onClick={onBegin} style={{ width: "100%", justifyContent: "center" }}>
-          {completedToday ? "Go again" : "Begin today’s session"}
+          {completedToday ? "Go again" : "Begin"}
         </Button>
       </div>
     </div>
