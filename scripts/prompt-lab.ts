@@ -7,7 +7,7 @@
  *   npm run prompt-lab -- --game story --model claude-opus-4-8
  *   npm run prompt-lab -- --game assoc --model claude-haiku-4-5 --turns 12
  *
- * Requires ANTHROPIC_API_KEY in the environment (or an `ant auth login` profile).
+ * Requires ANTHROPIC_API_KEY, read from .env via `--env-file` (or an `ant auth login` profile).
  */
 import Anthropic from "@anthropic-ai/sdk";
 import {

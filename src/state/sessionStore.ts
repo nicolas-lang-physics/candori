@@ -14,7 +14,7 @@ interface SessionState {
 }
 
 export const useSessionStore = create<SessionState>()(
-    //persist(
+    persist(
         (set, get) => ({
           screen: "home",
           advance: () => {
@@ -23,6 +23,6 @@ export const useSessionStore = create<SessionState>()(
           },
           reset: () => set({ screen: "home" }),
         }),
-     //   { name: "candori-session" }
-    //)
+        { name: "candori-session" }
+    )
 );

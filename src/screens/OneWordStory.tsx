@@ -7,7 +7,7 @@ import { ai } from "../lib/ai";
 import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { useStreakStore } from "../state/streakStore";
 
-const MAX_WORDS = 200;
+const MAX_WORDS = 500;
 const OPENERS = ["The", "Once", "Nobody", "Yesterday", "Somewhere", "She", "He", "Every"];
 // Ends the story. Alone: accept it as already finished, ending on the last
 // (AI) word. Appended to a word: submit that word and end immediately, no
@@ -23,6 +23,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const [waiting, setWaiting] = useState(false);
   const [done, setDone] = useState(false);
   const setLastStory = useStreakStore((s) => s.setLastStory);
+  const markToday = useStreakStore((s) => s.markToday);
   const doneRef = useRef(false);
   const storyBoxRef = useRef<HTMLDivElement>(null);
 
@@ -35,6 +36,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     doneRef.current = true;
     setDone(true);
     setLastStory(finalWords.map((w) => w.text).join(" "));
+    markToday();
   };
 
   const submit = () => {
@@ -167,7 +169,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
             Share
           </Button>
           <Button variant="primary" onClick={onContinue}>
-            One more thing
+            Get me out
           </Button>
         </div>
       </div>

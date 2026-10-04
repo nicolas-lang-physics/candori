@@ -2,13 +2,12 @@ import { Gallery } from "./screens/Gallery";
 import { Home } from "./screens/Home";
 //import { Lesson } from "./screens/Lesson";
 import { OneWordStory } from "./screens/OneWordStory";
-import { Reflection } from "./screens/Reflection";
-import { WordAssociation } from "./screens/WordAssociation";
+//import { Reflection } from "./screens/Reflection";
+//import { WordAssociation } from "./screens/WordAssociation";
 import { useSessionStore } from "./state/sessionStore";
 
-import oneWordInstructions from "./content/one-word-story.json";
 import {OWSInstruction} from "./screens/OWSInstruction.tsx";
-import {Lesson} from "./screens/Lesson.tsx";
+//import {Lesson} from "./screens/Lesson.tsx";
 
 export default function App() {
   const screen = useSessionStore((s) => s.screen);
@@ -52,11 +51,8 @@ export default function App() {
       >
         <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
           {screen === "home" && <Home onBegin={advance} />}
-          {screen === "lesson" && <Lesson onContinue={advance} />}
-          {screen === "instruction" && <OWSInstruction instructions={oneWordInstructions} onContinue={advance} />}
-          {screen === "assoc" && <WordAssociation onContinue={advance} />}
+          {screen === "instruction" && <OWSInstruction onContinue={advance} />}
           {screen === "story" && <OneWordStory onContinue={advance} />}
-          {screen === "reflect" && <Reflection onDone={advance} />}
         </div>
       </div>
     </div>
