@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:offline": "VITE_CANNED_AI=true vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run",

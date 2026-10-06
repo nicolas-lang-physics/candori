@@ -7,7 +7,7 @@
 ```sh
 npm install
 cp .env.example .env   # fill in ANTHROPIC_API_KEY at minimum
-npm run dev             # UI only, http://localhost:5173 — AI calls fall back to canned word pools
+npm run dev:offline     # UI only, http://localhost:5173 — AI replies come from canned word pools (dev only)
 vercel dev               # UI + /api/* functions, so real AI calls work
 ```
 

@@ -4,7 +4,8 @@ import { GlowSurface } from "../components/GlowSurface";
 import { StoryText, type StoryWord } from "../components/StoryText";
 import { TextInput } from "../components/TextInput";
 import { ai } from "../lib/ai";
-import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
+import { joinStory } from "../lib/story";
+import { MIN_DELAY_MS, aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { useStreakStore } from "../state/streakStore";
 
 const MAX_WORDS = 500;
@@ -22,6 +23,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const [heat, setHeat] = useState(0);
   const [waiting, setWaiting] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState(false);
   const setLastStory = useStreakStore((s) => s.setLastStory);
   const markToday = useStreakStore((s) => s.markToday);
   const doneRef = useRef(false);
@@ -35,7 +37,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const finish = (finalWords: StoryWord[]) => {
     doneRef.current = true;
     setDone(true);
-    setLastStory(finalWords.map((w) => w.text).join(" "));
+    setLastStory(joinStory(finalWords));
     markToday();
   };
 
@@ -54,6 +56,9 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     const endsHere = raw.endsWith(STOP_CHAR);
     const w = endsHere ? raw.slice(0, -STOP_CHAR.length).trim() : raw;
     if (!w) return;
+    // After an AI failure the player's word is still waiting for an answer:
+    // only "word~" (end here) goes through; otherwise use "Try again".
+    if (error && !endsHere) return;
 
     const withUser = [...words, { text: w, by: "user" as const }];
     setInput("");
@@ -64,18 +69,29 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
       return;
     }
 
-    setWords([...withUser, { text: "…", by: "ai", pending: true }]);
-    setWaiting(true);
     // Captured now, before it decays while we wait — reflects how fast the
     // player was typing at the moment they submitted this word.
-    const delay = aiReplyDelayMs(heat);
-    void withMinDelay(ai.nextStoryWord(withUser), delay).then((aiWord) => {
-      if (doneRef.current) return;
-      const next = [...withUser, { text: aiWord, by: "ai" as const }];
-      setWords(next);
-      setWaiting(false);
-      if (next.length >= MAX_WORDS) finish(next);
-    });
+    askAi(withUser, aiReplyDelayMs(heat));
+  };
+
+  const askAi = (withUser: StoryWord[], delay: number) => {
+    setError(false);
+    setWords([...withUser, { text: "…", by: "ai", pending: true }]);
+    setWaiting(true);
+    void withMinDelay(ai.nextStoryWord(withUser), delay)
+      .then((aiWord) => {
+        if (doneRef.current) return;
+        const next = [...withUser, { text: aiWord, by: "ai" as const }];
+        setWords(next);
+        setWaiting(false);
+        if (next.length >= MAX_WORDS) finish(next);
+      })
+      .catch(() => {
+        if (doneRef.current) return;
+        setWords(withUser);
+        setWaiting(false);
+        setError(true);
+      });
   };
 
   useEffect(() => {
@@ -91,7 +107,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     if (el) el.scrollTop = el.scrollHeight;
   }, [words]);
 
-  const storyText = words.filter((w) => !w.pending).map((w) => w.text).join(" ");
+  const storyText = joinStory(words.filter((w) => !w.pending));
 
   const share = async () => {
     const text = `${storyText}\n\n— a one-word story, written with candori`;
@@ -210,6 +226,23 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
       <GlowSurface heat={heat} style={{ padding: "18px 20px" }}>
         <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
       </GlowSurface>
+      {error ? (
+        <div
+          style={{
+            font: "var(--type-meta)",
+            color: "var(--text-meta)",
+            padding: "10px 2px 0",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+          }}
+        >
+          The storyteller didn’t answer.
+          <Button variant="quiet" onClick={() => askAi(words, MIN_DELAY_MS)}>
+            Try again
+          </Button>
+        </div>
+      ) : null}
       <div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
         ~ alone ends here · word~ ends on that word
       </div>

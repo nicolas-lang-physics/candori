@@ -3,7 +3,7 @@ import { Button } from "../components/Button";
 import { SoftTimer } from "../components/SoftTimer";
 import { TextInput } from "../components/TextInput";
 import { ai } from "../lib/ai";
-import { aiReplyDelayMs, withMinDelay } from "../lib/timing";
+import { MIN_DELAY_MS, aiReplyDelayMs, withMinDelay } from "../lib/timing";
 import { Blob, glowKeyframes, usePrefersReducedMotion, warmColor } from "./glow/Blobs";
 
 const STARTERS = ["river", "clock", "salt", "window", "thread", "ember", "map", "hollow"];
@@ -21,6 +21,7 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
     key: 0,
   }));
   const [waiting, setWaiting] = useState(false);
+  const [failedWord, setFailedWord] = useState<string | null>(null);
   const [faded, setFaded] = useState(false);
   const [input, setInput] = useState("");
   const [heat, setHeat] = useState(0); // smoothed 0..1, eases toward target
@@ -69,12 +70,23 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
     setCurrent((c) => ({ text: w, by: "user", key: c.key + 1 }));
     armFade();
     setInput("");
+    askAi(w, delay);
+  };
+
+  const askAi = (w: string, delay: number) => {
+    setFailedWord(null);
     setWaiting(true);
-    void withMinDelay(ai.nextAssociation(w), delay).then((word) => {
-      setCurrent((c) => ({ text: word, by: "ai", key: c.key + 1 }));
-      armFade();
-      setWaiting(false);
-    });
+    void withMinDelay(ai.nextAssociation(w), delay)
+      .then((word) => {
+        setCurrent((c) => ({ text: word, by: "ai", key: c.key + 1 }));
+        armFade();
+        setWaiting(false);
+      })
+      .catch(() => {
+        setWaiting(false);
+        setFailedWord(w);
+        setFaded(false);
+      });
   };
 
   // One shared warmth: every blob derives its color from the same continuous heat ramp,
@@ -129,6 +141,24 @@ export function WordAssociation({ onContinue }: { onContinue: () => void }) {
       >
         <TextInput placeholder="whatever comes" value={input} onChange={type} onSubmit={submit} autoFocus />
       </div>
+      {failedWord ? (
+        <div
+          style={{
+            font: "var(--type-meta)",
+            color: "var(--text-meta)",
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            position: "relative",
+            paddingBottom: 8,
+          }}
+        >
+          Couldn’t get a word back.
+          <Button variant="quiet" onClick={() => askAi(failedWord, MIN_DELAY_MS)}>
+            Try again
+          </Button>
+        </div>
+      ) : null}
       <div style={{ padding: "0 0 40px", display: "flex", justifyContent: "flex-end", position: "relative" }}>
         <Button variant="quiet" onClick={onContinue}>
           Done here

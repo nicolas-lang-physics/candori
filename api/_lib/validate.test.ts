@@ -33,15 +33,18 @@ describe("extractStoryWord", () => {
   it("returns a clean word unchanged", () => {
     expect(extractStoryWord("harbor")).toBe("harbor");
   });
-  it("preserves a single trailing period", () => {
+  it("keeps trailing and leading punctuation", () => {
     expect(extractStoryWord("harbor.")).toBe("harbor.");
+    expect(extractStoryWord("harbor,")).toBe("harbor,");
+    expect(extractStoryWord('"harbor"')).toBe('"harbor"');
+    expect(extractStoryWord("harbor!?")).toBe("harbor!?");
   });
-  it("takes only the first token", () => {
+  it("takes only the first word", () => {
     expect(extractStoryWord("harbor light")).toBe("harbor");
   });
-  it("strips surrounding punctuation and quotes other than a trailing period", () => {
-    expect(extractStoryWord("harbor,")).toBe("harbor");
-    expect(extractStoryWord('"harbor"')).toBe("harbor");
+  it("keeps a punctuation-only token together with the word after it", () => {
+    expect(extractStoryWord(", a")).toBe(", a");
+    expect(extractStoryWord("— and then")).toBe("— and");
   });
   it("keeps internal apostrophes and hyphens", () => {
     expect(extractStoryWord("don't")).toBe("don't");
@@ -57,6 +60,7 @@ describe("extractStoryWord", () => {
   it("rejects punctuation-only output", () => {
     expect(extractStoryWord(".")).toBeNull();
     expect(extractStoryWord("...")).toBeNull();
+    expect(extractStoryWord(", .")).toBeNull();
   });
   it("rejects empty or whitespace-only input", () => {
     expect(extractStoryWord("")).toBeNull();
