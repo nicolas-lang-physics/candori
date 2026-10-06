@@ -6,6 +6,7 @@ import { TextInput } from "../components/TextInput";
 import { ai } from "../lib/ai";
 import { joinStory } from "../lib/story";
 import { MIN_DELAY_MS, aiReplyDelayMs, withMinDelay } from "../lib/timing";
+import { useSessionStore } from "../state/sessionStore";
 import { useStreakStore } from "../state/streakStore";
 
 const MAX_WORDS = 500;
@@ -16,9 +17,12 @@ const OPENERS = ["The", "Once", "Nobody", "Yesterday", "Somewhere", "She", "He",
 const STOP_CHAR = "~";
 
 export function OneWordStory({ onContinue }: { onContinue: () => void }) {
-  const [words, setWords] = useState<StoryWord[]>(() => [
-    { text: OPENERS[Math.floor(Math.random() * OPENERS.length)], by: "ai" },
-  ]);
+  const [words, setWords] = useState<StoryWord[]>(
+    () =>
+      useSessionStore.getState().story ?? [
+        { text: OPENERS[Math.floor(Math.random() * OPENERS.length)], by: "ai" },
+      ],
+  );
   const [input, setInput] = useState("");
   const [heat, setHeat] = useState(0);
   const [waiting, setWaiting] = useState(false);
@@ -37,6 +41,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const finish = (finalWords: StoryWord[]) => {
     doneRef.current = true;
     setDone(true);
+    useSessionStore.getState().clearStory();
     setLastStory(joinStory(finalWords));
     markToday();
   };
@@ -93,6 +98,22 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
         setError(true);
       });
   };
+
+  // Persist the unfinished story on every change (never the pending
+  // placeholder), so the player can come back and continue it.
+  useEffect(() => {
+    if (doneRef.current) return;
+    useSessionStore.getState().setStory(words.filter((w) => !w.pending));
+  }, [words]);
+
+  // A restored story that ends on the player's word is still waiting for the
+  // AI's answer (we were closed mid-turn, or the AI had failed).
+  const resumedRef = useRef(false);
+  useEffect(() => {
+    if (resumedRef.current) return;
+    resumedRef.current = true;
+    if (words[words.length - 1].by === "user") askAi(words, MIN_DELAY_MS);
+  }, []);
 
   useEffect(() => {
     const t = setInterval(() => setHeat((h) => Math.max(0, h - 0.04)), 1000);
