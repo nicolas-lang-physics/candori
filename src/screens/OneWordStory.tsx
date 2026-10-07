@@ -28,7 +28,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   const [waiting, setWaiting] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState(false);
-  const setLastStory = useStreakStore((s) => s.setLastStory);
+  const addStory = useStreakStore((s) => s.addStory);
   const markToday = useStreakStore((s) => s.markToday);
   const doneRef = useRef(false);
   const storyBoxRef = useRef<HTMLDivElement>(null);
@@ -42,7 +42,11 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
     doneRef.current = true;
     setDone(true);
     useSessionStore.getState().clearStory();
-    setLastStory(joinStory(finalWords));
+    if (finalWords.length <= 1) {   // revise once user can write the first word
+        onContinue();
+        return;
+    }
+    addStory(finalWords);
     markToday();
   };
 
@@ -145,7 +149,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
 
   if (done) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 24px" }}>
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 6px" }}>
         <div
           style={{
             padding: "28px 0 0",
@@ -214,7 +218,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 6px" }}>
       <div style={{ padding: "28px 0 0", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span
           style={{
@@ -258,7 +262,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
             gap: 8,
           }}
         >
-          The storyteller didn’t answer.
+          The AI didn’t answer.
           <Button variant="quiet" onClick={() => askAi(words, MIN_DELAY_MS)}>
             Try again
           </Button>

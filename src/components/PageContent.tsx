@@ -10,7 +10,7 @@ export function PageContent({ title, text }: PageContentProps) {
             <div style={{ font: "var(--type-display)", letterSpacing: "var(--tracking-display)", color: "var(--ink)" }}>
                 {title}
             </div>
-            <div style={{ font: "var(--type-body)", color: "var(--text-secondary)", maxWidth: "26rem" }}>{text}</div>
+            <div style={{ font: "var(--type-body)", color: "var(--text-secondary)" }}>{text}</div>
         </div>
     );
 }

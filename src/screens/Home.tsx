@@ -1,12 +1,12 @@
 import { Button } from "../components/Button";
 //import { StreakDots } from "../components/StreakDots";
-import { useStreak, useStreakStore } from "../state/streakStore";
+import { useLastStory, useStreak } from "../state/streakStore";
 //import { SignInPrompt } from "./SignInPrompt";
 
 export function Home({ onBegin }: { onBegin: () => void }) {
   //const { day, week, completedToday, completionCount } = useStreak();
   const { completedToday } = useStreak();
-  const lastStory = useStreakStore((s) => s.lastStory);
+  const lastStory = useLastStory();
 
   const subtitle = completedToday
     ? "That's it. Come back tomorrow — or go again, nobody is counting."
@@ -15,7 +15,7 @@ export function Home({ onBegin }: { onBegin: () => void }) {
       : "Candori brings you some beloved improv exercises in app-form. Ever created a one-word story? Give it a try!";
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 24px" }}>
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 6px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "28px 0 0" }}>
         <span style={{ font: "500 20px/1 var(--font-sans)", letterSpacing: "-0.01em", color: "var(--ink)" }}>
           candori
