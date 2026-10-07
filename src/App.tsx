@@ -20,18 +20,19 @@ export default function App() {
   return (
     <div
       style={{
-        minHeight: "100dvh",
+        height: "100dvh",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        padding: "24px 16px",
+        padding: "max(12px, env(safe-area-inset-top)) 16px max(12px, env(safe-area-inset-bottom))",
         background: "var(--surface-page)",
         boxSizing: "border-box",
       }}
     >
       {/* Bounded app card — a responsive version of the mock's fixed 390×772
           frame (UI/ui_kits/app-v2/index.html). Portrait aspect maintained
-          across the whole clamp range: max height (900) > max width (640).
+          across the whole range: max height (900) > max width (640). Height fills
+          the viewport (minus padding) so small phones never need page scroll.
 
           overflow is intentionally left visible (test): the word-association
           glow and the story input's GlowSurface halo are allowed to bleed
@@ -40,7 +41,7 @@ export default function App() {
         <div
         style={{
           width: "clamp(320px, 92vw, 640px)",
-          height: "clamp(680px, 92vh, 900px)",
+          height: "min(900px, 100%)",
           background: "var(--surface-page)",
           //border: "1px solid var(--hairline)",
           //borderRadius: "var(--radius-frame)",
@@ -49,7 +50,7 @@ export default function App() {
           flexDirection: "column",
         }}
       >
-        <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <div style={{ flex: 1, minHeight: 0, display: "flex", flexDirection: "column" }}>
           {screen === "home" && <Home onBegin={advance} />}
           {screen === "instruction" && <OWSInstruction onContinue={advance} />}
           {screen === "story" && <OneWordStory onContinue={advance} />}

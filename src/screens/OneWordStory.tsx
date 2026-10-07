@@ -205,12 +205,12 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
             </div>
           </div>
         </div>
-        <div style={{ padding: "0 0 40px", display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <Button variant="ghost" onClick={() => void share()}>
+        <div style={{ padding: "0 0 20px", display: "flex", gap: 12, justifyContent: "flex-end" }}>
+          <Button size="lg" variant="ghost" onClick={() => void share()}>
             Share
           </Button>
-          <Button variant="primary" onClick={onContinue}>
-            Get me out
+          <Button size="lg" variant="primary" onClick={onContinue}>
+            Done
           </Button>
         </div>
       </div>
@@ -218,7 +218,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 6px" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: "0 6px" }}>
       <div style={{ padding: "28px 0 0", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
         <span
           style={{
@@ -228,7 +228,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
             color: "var(--text-meta)",
           }}
         >
-          One-word story · 3 of 3
+          One-word story
         </span>
         <span style={{ font: "var(--type-meta)", color: "var(--text-meta)" }}>
           {words.filter((w) => !w.pending).length} / {MAX_WORDS}
@@ -248,7 +248,7 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
       >
         <StoryText words={words} cursor />
       </div>
-      <GlowSurface heat={heat} style={{ padding: "18px 20px" }}>
+      <GlowSurface heat={heat} style={{ padding: "18px 20px", marginBottom: "12px" }}>
         <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
       </GlowSurface>
       {error ? (
@@ -268,9 +268,9 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
           </Button>
         </div>
       ) : null}
-      <div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
+        {/*<div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
         ~ alone ends here · word~ ends on that word
-      </div>
+      </div>*/}
     </div>
   );
 }
