@@ -4,12 +4,13 @@ export interface ButtonProps {
   variant?: "primary" | "quiet" | "ghost";
   size?: "md" | "lg";
   disabled?: boolean;
+  autoFocus?: boolean;
   onClick?: () => void;
   children?: ReactNode;
   style?: CSSProperties;
 }
 
-export function Button({ variant = "primary", size = "md", disabled, children, onClick, style }: ButtonProps) {
+export function Button({ variant = "primary", size = "md", disabled, autoFocus, children, onClick, style }: ButtonProps) {
   const [hover, setHover] = useState(false);
   const pad = size === "lg" ? "14px 28px" : "10px 22px";
   const base: CSSProperties = {
@@ -38,6 +39,7 @@ export function Button({ variant = "primary", size = "md", disabled, children, o
   };
   return (
     <button
+      autoFocus={autoFocus}
       onClick={disabled ? undefined : onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}

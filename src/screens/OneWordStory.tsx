@@ -252,20 +252,46 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
         <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
       </GlowSurface>
       {error ? (
+        // Blocks the whole app until the player retries; the scrim swallows clicks.
         <div
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="ows-error-title"
           style={{
-            font: "var(--type-meta)",
-            color: "var(--text-meta)",
-            padding: "10px 2px 0",
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
+            position: "fixed",
+            inset: 0,
+            zIndex: 10,
+            display: "grid",
+            placeItems: "center",
+            padding: 24,
+            background: "rgba(74,58,38,0.28)",
+            backdropFilter: "blur(2px)",
           }}
         >
-          The AI didn’t answer.
-          <Button variant="quiet" onClick={() => askAi(words, MIN_DELAY_MS)}>
-            Try again
-          </Button>
+          <div
+            style={{
+              background: "var(--surface-raised)",
+              border: "var(--border-card)",
+              borderRadius: "var(--radius-l)",
+              boxShadow: "var(--shadow-raised)",
+              padding: "28px 28px 24px",
+              width: "100%",
+              maxWidth: 320,
+              boxSizing: "border-box",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 20,
+              textAlign: "justify",
+            }}
+          >
+            <div id="ows-error-title" style={{ font: "var(--type-body)", color: "var(--ink)" }}>
+              The AI didn’t answer. If the problem persists try again later or write us an email to report the issue.
+            </div>
+            <Button variant="primary" size="lg" autoFocus onClick={() => askAi(words, MIN_DELAY_MS)}>
+              Try again
+            </Button>
+          </div>
         </div>
       ) : null}
         {/*<div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
