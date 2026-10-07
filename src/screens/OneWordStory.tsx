@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "../components/Button";
+import { Card } from "../components/Card";
+import { MetaLabel } from "../components/MetaLabel";
+import { Modal } from "../components/Modal";
+import { Screen, ScreenFooter, ScreenHeader } from "../components/Screen";
+import { Wordmark } from "../components/Wordmark";
 import { GlowSurface } from "../components/GlowSurface";
 import { StoryText, type StoryWord } from "../components/StoryText";
 import { TextInput } from "../components/TextInput";
@@ -149,154 +154,83 @@ export function OneWordStory({ onContinue }: { onContinue: () => void }) {
 
   if (done) {
     return (
-      <div style={{ display: "flex", flexDirection: "column", minHeight: "100%", padding: "0 6px" }}>
-        <div
+      <Screen
+        header={<ScreenHeader left={<MetaLabel>Your story · today</MetaLabel>} />}
+        bodyStyle={{ display: "grid", placeItems: "center", gap: 32, padding: "48px 0" }}
+        footer={
+          <ScreenFooter row  style={{ paddingBottom: 20 }}>
+            <Button size="lg" variant="ghost" onClick={() => void share()}>
+              Share
+            </Button>
+            <Button size="lg" variant="primary" onClick={onContinue}>
+              Done
+            </Button>
+          </ScreenFooter>
+        }
+      >
+        <Card
           style={{
-            padding: "28px 0 0",
-            font: "var(--type-meta)",
-            letterSpacing: "var(--tracking-meta)",
-            textTransform: "uppercase",
-            color: "var(--text-meta)",
+            padding: "36px 30px",
+            maxHeight: "100%",
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
           }}
         >
-          Your story · today
-        </div>
-        <div style={{ flex: 1, display: "grid", placeItems: "center", padding: "24px 0", minHeight: 0 }}>
+          <div style={{ font: "var(--type-story)", lineHeight: 1.65, color: "var(--ink)", overflowY: "auto" }}>
+            {storyText}
+          </div>
           <div
             style={{
-              background: "var(--surface-raised)",
-              border: "var(--border-card)",
-              borderRadius: "var(--radius-l)",
-              boxShadow: "var(--shadow-raised)",
-              padding: "36px 30px",
-              width: "100%",
-              maxHeight: "100%",
-              boxSizing: "border-box",
+              marginTop: 24,
+              paddingTop: 16,
+              borderTop: "1px solid var(--hairline)",
               display: "flex",
-              flexDirection: "column",
-              overflow: "hidden",
+              justifyContent: "space-between",
+              alignItems: "baseline",
+              flexShrink: 0,
             }}
           >
-            <div style={{ font: "var(--type-story)", lineHeight: 1.65, color: "var(--ink)", overflowY: "auto" }}>
-              {storyText}
-            </div>
-            <div
-              style={{
-                marginTop: 24,
-                paddingTop: 16,
-                borderTop: "1px solid var(--hairline)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                flexShrink: 0,
-              }}
-            >
-              <span style={{ font: "500 15px/1 var(--font-sans)", color: "var(--ink)" }}>candori</span>
-              <span
-                style={{
-                  font: "var(--type-meta)",
-                  letterSpacing: "var(--tracking-meta)",
-                  textTransform: "uppercase",
-                  color: "var(--text-meta)",
-                }}
-              >
-                a one-word story
-              </span>
-            </div>
+            <Wordmark size="sm" />
+            <MetaLabel>a one-word story</MetaLabel>
           </div>
-        </div>
-        <div style={{ padding: "0 0 20px", display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <Button size="lg" variant="ghost" onClick={() => void share()}>
-            Share
-          </Button>
-          <Button size="lg" variant="primary" onClick={onContinue}>
-            Done
-          </Button>
-        </div>
-      </div>
+        </Card>
+      </Screen>
     );
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", padding: "0 6px" }}>
-      <div style={{ padding: "28px 0 0", display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-        <span
-          style={{
-            font: "var(--type-meta)",
-            letterSpacing: "var(--tracking-meta)",
-            textTransform: "uppercase",
-            color: "var(--text-meta)",
-          }}
-        >
-          One-word story
-        </span>
-        <span style={{ font: "var(--type-meta)", color: "var(--text-meta)" }}>
-          {words.filter((w) => !w.pending).length} / {MAX_WORDS}
-        </span>
-      </div>
-      <div
-        ref={storyBoxRef}
-        style={{
-          flex: 1,
-          minHeight: 0,
-          padding: "32px 0",
-          overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-        }}
-      >
-        <StoryText words={words} cursor />
-      </div>
-      <GlowSurface heat={heat} style={{ padding: "18px 20px", marginBottom: "12px" }}>
-        <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
-      </GlowSurface>
+    <Screen
+      header={
+        <ScreenHeader
+          left={<MetaLabel>One-word story</MetaLabel>}
+          right={
+            <MetaLabel caps={false}>
+              {words.filter((w) => !w.pending).length} / {MAX_WORDS}
+            </MetaLabel>
+          }
+        />
+      }
+      bodyRef={storyBoxRef}
+      footer={
+        <ScreenFooter style={{ paddingBottom: 12 }}>
+          <GlowSurface heat={heat} style={{ padding: "18px 20px" }}>
+            <TextInput placeholder="one word" value={input} onChange={type} onSubmit={submit} autoFocus />
+          </GlowSurface>
+        </ScreenFooter>
+      }
+    >
+      <StoryText words={words} cursor />
       {error ? (
-        // Blocks the whole app until the player retries; the scrim swallows clicks.
-        <div
-          role="alertdialog"
-          aria-modal="true"
-          aria-labelledby="ows-error-title"
-          style={{
-            position: "fixed",
-            inset: 0,
-            zIndex: 10,
-            display: "grid",
-            placeItems: "center",
-            padding: 24,
-            background: "rgba(74,58,38,0.28)",
-            backdropFilter: "blur(2px)",
-          }}
-        >
-          <div
-            style={{
-              background: "var(--surface-raised)",
-              border: "var(--border-card)",
-              borderRadius: "var(--radius-l)",
-              boxShadow: "var(--shadow-raised)",
-              padding: "28px 28px 24px",
-              width: "100%",
-              maxWidth: 320,
-              boxSizing: "border-box",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 20,
-              textAlign: "justify",
-            }}
-          >
-            <div id="ows-error-title" style={{ font: "var(--type-body)", color: "var(--ink)" }}>
-              The AI didn’t answer. If the problem persists try again later or write us an email to report the issue.
-            </div>
-            <Button variant="primary" size="lg" autoFocus onClick={() => askAi(words, MIN_DELAY_MS)}>
-              Try again
-            </Button>
+        <Modal label="The AI didn’t answer">
+          <div style={{ font: "var(--type-body)", color: "var(--ink)", textAlign: "justify" }}>
+            The AI didn’t answer. If the problem persists try again later or write us an email to report the issue.
           </div>
-        </div>
+          <Button variant="primary" size="lg" autoFocus onClick={() => askAi(words, MIN_DELAY_MS)}>
+            Try again
+          </Button>
+        </Modal>
       ) : null}
-        {/*<div style={{ font: "var(--type-meta)", color: "var(--text-meta)", padding: "10px 2px 0", marginBottom: 40 }}>
-        ~ alone ends here · word~ ends on that word
-      </div>*/}
-    </div>
+    </Screen>
   );
 }

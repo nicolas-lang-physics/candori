@@ -5,12 +5,13 @@ export interface ButtonProps {
   size?: "md" | "lg";
   disabled?: boolean;
   autoFocus?: boolean;
+  fullWidth?: boolean;
   onClick?: () => void;
   children?: ReactNode;
   style?: CSSProperties;
 }
 
-export function Button({ variant = "primary", size = "md", disabled, autoFocus, children, onClick, style }: ButtonProps) {
+export function Button({ variant = "primary", size = "md", disabled, autoFocus, fullWidth, children, onClick, style }: ButtonProps) {
   const [hover, setHover] = useState(false);
   const pad = size === "lg" ? "14px 28px" : "10px 22px";
   const base: CSSProperties = {
@@ -43,7 +44,7 @@ export function Button({ variant = "primary", size = "md", disabled, autoFocus, 
       onClick={disabled ? undefined : onClick}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ ...base, ...variants[variant], ...(hover && !disabled ? hoverStyles[variant] : {}), ...style }}
+      style={{ ...base, ...variants[variant], ...(hover && !disabled ? hoverStyles[variant] : {}), ...(fullWidth ? { width: "100%", justifyContent: "center" } : null), ...style }}
     >
       {children}
     </button>
