@@ -1,21 +1,12 @@
-import { Gallery } from "./screens/Gallery";
 import { Home } from "./screens/Home";
-//import { Lesson } from "./screens/Lesson";
 import { OneWordStory } from "./screens/OneWordStory";
-//import { Reflection } from "./screens/Reflection";
-//import { WordAssociation } from "./screens/WordAssociation";
-import { useSessionStore } from "./state/sessionStore";
-
 import {OWSInstruction} from "./screens/OWSInstruction.tsx";
-//import {Lesson} from "./screens/Lesson.tsx";
+import { useSessionStore } from "./state/sessionStore";
 
 export default function App() {
   const screen = useSessionStore((s) => s.screen);
   const advance = useSessionStore((s) => s.advance);
 
-  if (import.meta.env.DEV && window.location.hash === "#gallery") {
-    return <Gallery />;
-  }
 
   return (
     <div
@@ -29,23 +20,11 @@ export default function App() {
         boxSizing: "border-box",
       }}
     >
-      {/* Bounded app card — a responsive version of the mock's fixed 390×772
-          frame (UI/ui_kits/app-v2/index.html). Portrait aspect maintained
-          across the whole range: max height (900) > max width (640). Height fills
-          the viewport (minus padding) so small phones never need page scroll.
-
-          overflow is intentionally left visible (test): the word-association
-          glow and the story input's GlowSurface halo are allowed to bleed
-          past the rounded edge instead of being clipped by it. If that ships,
-          swap back to overflow:'hidden' + overflowY:'auto' on the inner div. */}
         <div
         style={{
           width: "clamp(320px, 92vw, 640px)",
           height: "min(900px, 100%)",
           background: "var(--surface-page)",
-          //border: "1px solid var(--hairline)",
-          //borderRadius: "var(--radius-frame)",
-          //boxShadow: "var(--shadow-raised)",
           display: "flex",
           flexDirection: "column",
         }}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { glowColor } from "../../components/GlowSurface";
+import { glowColor } from "../../../components/GlowSurface.tsx";
 
 /** Plasma-glow field from the v2 mock: blurred radial blobs colored by one shared heat ramp. */
 

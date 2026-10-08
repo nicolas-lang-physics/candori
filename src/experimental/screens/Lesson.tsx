@@ -1,7 +1,7 @@
-import { Button } from "../components/Button";
-import { LessonCard } from "../components/LessonCard";
+import { Button } from "../../components/Button.tsx";
+import { LessonCard } from "../components/LessonCard.tsx";
 import lessons from "../content/lessons.json";
-import { useStreak } from "../state/streakStore";
+import { useStreak } from "../../state/streakStore.ts";
 
 export function Lesson({ onContinue }: { onContinue: () => void }) {
   const { completionCount } = useStreak();

@@ -1,6 +1,7 @@
 # candori
 
-
+Candori is a progressive-web app that lets users play improv games with AI as their partner.
+Currently in testing and with only a single game: one-word story.
 
 ## Local development
 
@@ -27,8 +28,8 @@ npm run prompt-lab -- --game assoc --model claude-haiku-4-5  # iterate the assoc
 | Env var | Where | Purpose |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | server only | Claude API key — never exposed to the client |
-| `CANDORI_MODEL_STORY` | server only | model for one-word story turns (default `claude-opus-4-8`) |
-| `CANDORI_MODEL_ASSOC` | server only | model for word-association turns (default `claude-opus-4-8`) |
+| `CANDORI_MODEL_STORY` | server only | model for one-word story turns (default `claude-sonnet-5-5`) |
+| `CANDORI_MODEL_ASSOC` | server only | model for word-association turns (default `claude-sonnet-5-5`) |
 | `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` | client (safe to expose; RLS-protected) | optional streak sync + magic-link auth |
 
 Supabase is entirely optional: sessions work fully offline/anonymously with

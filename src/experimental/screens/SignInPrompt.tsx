@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { TextInput } from "../components/TextInput";
-import { sendMagicLink } from "../lib/supabase";
+import { TextInput } from "../../components/TextInput.tsx";
+import { sendMagicLink } from "../../lib/supabase.ts";
 
 /**
  * Quiet, dismissible — never a wall. Shown on Home only after the user has

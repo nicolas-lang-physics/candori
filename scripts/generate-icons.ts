@@ -1,9 +1,6 @@
 #!/usr/bin/env node
 /**
- * Generates PWA icons from an SVG source. No mascot, no wordmark-as-icon
- * (illegible at 192px) — per the brand rules, the glow itself is the mark: a
- * warm parchment tile with a soft sand→amber→coral radial, the same ramp
- * GlowSurface uses at rest. Regenerate with `npm run generate-icons`.
+ * Generates PWA icons from an SVG source.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";

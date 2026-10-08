@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { Button } from "../components/Button";
-import { ReflectionBox } from "../components/ReflectionBox";
-import { StreakDots } from "../components/StreakDots";
-import { todayISO } from "../lib/streak";
-import { useStreak, useStreakStore } from "../state/streakStore";
+import { Button } from "../../components/Button.tsx";
+import { ReflectionBox } from "../components/ReflectionBox.tsx";
+import { StreakDots } from "../components/StreakDots.tsx";
+import { todayISO } from "../../lib/streak.ts";
+import { useStreak, useStreakStore } from "../../state/streakStore.ts";
 
 const PROMPTS = ["What surprised you?", "What did you avoid?", "Which word wasn’t yours?"];
 

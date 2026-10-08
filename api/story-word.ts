@@ -41,7 +41,7 @@ async function oneWord(words: StoryWordInput[]): Promise<string | null> {
   });
   const text = response.content.find((b) => b.type === "text");
 
-  console.debug("Response: ", response);
+  // console.debug("Response: ", response);
   // extractStoryWord already rejects a bare "." (empty core) and strips any
   // stray "~" the model might emit — the AI can never end the story itself.
   return text && text.type === "text" ? extractStoryWord(text.text) : null;

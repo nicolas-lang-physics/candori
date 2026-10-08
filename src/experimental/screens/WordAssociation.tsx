@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { Button } from "../components/Button";
-import { SoftTimer } from "../components/SoftTimer";
-import { TextInput } from "../components/TextInput";
-import { ai } from "../lib/ai";
-import { MIN_DELAY_MS, aiReplyDelayMs, withMinDelay } from "../lib/timing";
-import { Blob, glowKeyframes, usePrefersReducedMotion, warmColor } from "./glow/Blobs";
+import { Button } from "../../components/Button.tsx";
+import { SoftTimer } from "../../components/SoftTimer.tsx";
+import { TextInput } from "../../components/TextInput.tsx";
+import { ai } from "../../lib/ai.ts";
+import { MIN_DELAY_MS, aiReplyDelayMs, withMinDelay } from "../../lib/timing.ts";
+import { Blob, glowKeyframes, usePrefersReducedMotion, warmColor } from "./glow/Blobs.tsx";
 
 const STARTERS = ["river", "clock", "salt", "window", "thread", "ember", "map", "hollow"];
 
