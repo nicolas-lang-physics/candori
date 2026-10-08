@@ -1,7 +1,7 @@
-import { assocModel, getClient, noThinking } from "./_lib/anthropic";
-import { ASSOCIATION_SYSTEM, associationUserMessage } from "./_lib/prompts";
-import { extractWord } from "./_lib/validate";
-import { rejectForeignOrigin } from "./_lib/origin";
+import { assocModel, getClient, noThinking } from "./_lib/anthropic.js";
+import { ASSOCIATION_SYSTEM, associationUserMessage } from "./_lib/prompts.js";
+import { extractWord } from "./_lib/validate.js";
+import { rejectForeignOrigin } from "./_lib/origin.js";
 
 // Plain Vite app on Vercel (not Next.js) — Node runtime, Web-standard
 // `fetch` handler. Not Edge: the Anthropic SDK imports node:fs for credentials.
