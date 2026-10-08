@@ -1,6 +1,7 @@
 import { getClient, noThinking, storyModel } from "./_lib/anthropic";
 import {messagesFromStoryWords, oneMessageFromStoryWords, STORY_SYSTEM} from "./_lib/prompts";
 import { extractStoryWord } from "./_lib/validate";
+import { rejectForeignOrigin } from "./_lib/origin";
 
 // Plain Vite app on Vercel (not Next.js) — Node runtime, Web-standard
 // `fetch` handler. Not Edge: the Anthropic SDK imports node:fs for credentials.
@@ -51,6 +52,8 @@ async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") {
     return Response.json({ error: "method not allowed" }, { status: 405 });
   }
+  const forbidden = rejectForeignOrigin(request);
+  if (forbidden) return forbidden;
 
   let words: StoryWordInput[] | null;
   try {
