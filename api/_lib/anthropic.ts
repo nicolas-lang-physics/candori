@@ -27,5 +27,5 @@ export function assocModel(): string {
 export function noThinking(model: string): { thinking?: Anthropic.ThinkingConfigParam } {
   return model.startsWith("claude-sonnet-5-5")
     ? { thinking: { type: "between_tools" } as unknown as Anthropic.ThinkingConfigParam }
-    : {};
+    : { thinking: { type: "disabled" }};
 }

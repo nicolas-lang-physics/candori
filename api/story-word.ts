@@ -1,5 +1,5 @@
 import { getClient, noThinking, storyModel } from "./_lib/anthropic";
-import { messagesFromStoryWords, STORY_SYSTEM } from "./_lib/prompts";
+import {messagesFromStoryWords, oneMessageFromStoryWords, STORY_SYSTEM} from "./_lib/prompts";
 import { extractStoryWord } from "./_lib/validate";
 
 // Plain Vite app on Vercel (not Next.js) — Node runtime, Web-standard
@@ -37,7 +37,7 @@ async function oneWord(words: StoryWordInput[]): Promise<string | null> {
     // on the system block lets every new game reuse the shared system prompt.
     cache_control: { type: "ephemeral" },
     system: [{ type: "text", text: STORY_SYSTEM, cache_control: { type: "ephemeral" } }],
-    messages: messagesFromStoryWords(words),
+    messages: messagesFromStoryWords(words), //[oneMessageFromStoryWords(words)]
   });
   const text = response.content.find((b) => b.type === "text");
 

@@ -12,7 +12,7 @@ async function oneWord(lastWord: string): Promise<string | null> {
     max_tokens: 16,
     ...noThinking(model),
     system: [{ type: "text", text: ASSOCIATION_SYSTEM, cache_control: { type: "ephemeral" } }],
-    messages: [{ role: "user", content: associationUserMessage(lastWord) }],
+    messages: [associationUserMessage(lastWord)],
   });
   const text = response.content.find((b) => b.type === "text");
   return text && text.type === "text" ? extractWord(text.text) : null;

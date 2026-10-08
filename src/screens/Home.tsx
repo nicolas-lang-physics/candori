@@ -12,7 +12,8 @@ export function Home({ onBegin }: { onBegin: () => void }) {
     ? "That's it. Come back tomorrow — or go again, nobody is counting."
     : lastStory
       ? `Ready for your next story? Yesterday you wrote: “${lastStory.split(" ").slice(0, 8).join(" ")}…” What's today?`
-      : "Candori brings you some beloved improv exercises in app-form. Ever created a one-word story? Give it a try!";
+      : "Candori brings you some beloved improv exercises in app-form. It's currently in beta." +
+          "Wanna give our one-word story a try? Click \"Begin\" to get started.";
 
   return (
     <IntroPage

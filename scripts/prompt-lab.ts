@@ -14,7 +14,7 @@ import {
   ASSOCIATION_SYSTEM,
   STORY_SYSTEM,
   associationUserMessage,
-  storyUserMessage,
+  oneMessageFromStoryWords,
 } from "../api/_lib/prompts";
 import { extractStoryWord, extractWord } from "../api/_lib/validate";
 
@@ -48,14 +48,14 @@ async function nextWord(
   client: Anthropic,
   model: string,
   system: string,
-  userMessage: string,
+  userMessage: {role: "user" | "assistant", content: string},
   extractor: (raw: string) => string | null = extractWord,
 ) {
   const response = await client.messages.create({
     model,
     max_tokens: 16,
     system,
-    messages: [{ role: "user", content: userMessage }],
+    messages: [userMessage],
   });
   const text = response.content.find((b) => b.type === "text");
   return text && text.type === "text" ? extractor(text.text) : null;
@@ -72,10 +72,14 @@ async function runStory(client: Anthropic, model: string, turns: number) {
     // both sides so prompts can be eyeballed without a human typing along.
     const userWord =
       (await nextWord(client, model, "You are a whimsical, terse writer playing a word game. Reply with exactly one word, no punctuation.",
-        `Continue this story with one word: ${words.map((w) => w.text).join(" ")}`)) ?? "the";
+          {
+            role: "user",
+            content: `Continue this story with one word: ${words.map((w) => w.text).join(" ")}`
+          }))
+        ?? "the";
     words.push({ text: userWord, by: "user" });
     process.stdout.write(` ${userWord}`);
-    const aiWord = await nextWord(client, model, STORY_SYSTEM, storyUserMessage(words), extractStoryWord);
+    const aiWord = await nextWord(client, model, STORY_SYSTEM, oneMessageFromStoryWords(words), extractStoryWord);
     if (!aiWord) {
       console.log("\n  [no valid word returned]");
       break;

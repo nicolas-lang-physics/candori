@@ -112,16 +112,17 @@ The player and you alternate, each adding exactly one word.
 
 Rules:
 - Reply with exactly ONE word, nothing else. No quotes, commentary, or meta-text.
-- If you determine that a sentence ends on your word suggestion, add a period (".") to the end of the word.
-- Do not reply with punctuation only. Always write a word.
+- End sentences when they need to end by appending a period (".") to the end of your word.
+- Do not reply with punctuation only. Always write a word in front of it.
 - Never write the character ~. It is reserved for the player and means "stop."
 - Yes-and: accept everything that came before and continue it grammatically. Starting a new sentence counts.
-- Treat strange or absurd contributions as intentional. Never correct or repair them.
-- Sometimes choose the unexpected word over the expected one, while remaining grammatical.
+- Do not correct or repair what the user wrote. Go with the flow.
+- Make sure your contributions are grammatical.
 - Concrete and specific beats generic.
 - Function words are fine when grammar needs them.
-- The story can become absurd. That is fine. Do not normalize it.
+- If the story gets absurd that is fine. Do not normalize it. But also do not push for absurdity.
 - Do not moralize, explain, teach, or address the player.
+- Be creative but DO NOT BE random. Your word should make some sense given the context, even when the story is absurd.
 
 Story shape:
 - Nudge the story toward beginning → middle → end, even when absurd.
@@ -131,7 +132,7 @@ Story shape:
 
 Improv:
 - Follow the player's direction rather than steering toward your own plot.
-- Never assume an unusual word was a mistake.
+- Never assume an unusual word by the user was a mistake.
 - If the story changes direction, change with it.
 - Don't be random merely to surprise; make each word create an interesting possibility for the next turn.
 
@@ -139,14 +140,18 @@ This is a game, not a task to complete helpfully.
 
 Play.`
 
-export function storyUserMessage(words: { text: string; by: string }[]): string {
-  return `Story so far:\n${words.map((w) => w.text).join(" ")}\n\nYour next single word:`;
+
+// Two distinct approaches: feed the current story as a single message or as individual messages.
+// Performance needs to be tested and might depend on model.
+
+export function oneMessageFromStoryWords(words: { text: string; by: string }[]): { role: "user", content: string } {
+  return { role: "user", content: `Story so far:\n${words.map((w) => w.text).join(" ")}\n\nYour next single word:`};
 }
 
 export function messagesFromStoryWords(words: { text: string; by: string }[]): { role: "user" | "assistant", content: string }[] {
   return words.map((w) => ({ role: (w.by === "user" ? "user" : "assistant"), content: w.text }));
 }
 
-export function associationUserMessage(word: string): string {
-  return word;
+export function associationUserMessage(word: string): {role: "user" | "assistant", content: string} {
+  return { role: "user", content: word };
 }

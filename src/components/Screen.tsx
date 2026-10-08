@@ -24,10 +24,8 @@ export function Screen({ header, footer, children, bodyRef, bodyStyle }: ScreenP
           flex: 1,
           minHeight: 0,
           overflowY: "auto",
-          display: "flex",
-          flexDirection: "column",
           justifyContent: "center",
-          padding: "32px 0",
+          padding: "32px 0px",
           ...bodyStyle,
         }}
       >

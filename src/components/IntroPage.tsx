@@ -20,7 +20,7 @@ export function IntroPage({ title, text, header, buttonText, narrowBody, showWor
   return (
     <Screen
       header={<ScreenHeader left={showWordMark ? <Wordmark /> : null} right={header ? <MetaLabel>{header}</MetaLabel> : null} />}
-      bodyStyle={{ gap: 32, padding: "48px 0" }}
+      bodyStyle={{ gap: 32, padding: "48px 0", display: "flex", flexDirection: "column" }}
       footer={
         <ScreenFooter>
           <Button variant="primary" size="lg" fullWidth onClick={onNext}>
